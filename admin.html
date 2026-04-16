@@ -4,106 +4,290 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Alumni Management</title>
-    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .login-box button {
+            background: #1e3c72;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #1e3c72;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        button {
+            background: #1e3c72;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        .edit-btn { background: #28a745; }
+        .delete-btn { background: #dc3545; }
+        
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="admin-container">
-        <div class="login-screen" id="loginScreen">
-            <div class="login-box">
-                <h2>🔐 Admin Login</h2>
-                <input type="password" id="adminPassword" placeholder="Enter Admin Password" onkeypress="if(event.key==='Enter') checkLogin()">
-                <button onclick="checkLogin()">Login</button>
-                <div id="loginError" class="error-message"></div>
-            </div>
-        </div>
-
-        <div class="admin-panel" id="adminPanel" style="display:none;">
-            <header>
-                <h1>📋 Alumni Management System</h1>
-                <button onclick="logout()" class="logout-btn">Logout</button>
-            </header>
-
-            <div class="stats-bar">
-                <div>Total Alumni: <span id="totalAlumni">0</span></div>
-                <div>Intakes: 29-39</div>
-            </div>
-
-            <!-- Add/Edit Form -->
-            <div class="form-container">
-                <h3 id="formTitle">Add New Alumni</h3>
-                <form id="alumniForm">
-                    <input type="hidden" id="editIndex">
-                    <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Intake Number * (29-39)</label>
-                        <input type="number" id="intake" min="29" max="39" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Degree *</label>
-                        <input type="text" id="degree" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Graduation Year</label>
-                        <input type="number" id="year">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="email">
-                    </div>
-                    <div class="form-group">
-                        <label>Current Job/Position</label>
-                        <input type="text" id="job">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="phone">
-                    </div>
-                    <div class="form-group">
-                        <label>Location/City</label>
-                        <input type="text" id="location">
-                    </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="save-btn">💾 Save Alumni</button>
-                        <button type="button" onclick="resetForm()" class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Alumni List Management -->
-            <div class="manage-section">
-                <h3>Manage Alumni Database</h3>
-                <div class="search-bar">
-                    <input type="text" id="searchAdmin" placeholder="Search alumni...">
-                    <select id="intakeFilter">
-                        <option value="all">All Intakes</option>
-                        <option value="29">Intake 29</option>
-                        <option value="30">Intake 30</option>
-                        <option value="31">Intake 31</option>
-                        <option value="32">Intake 32</option>
-                        <option value="33">Intake 33</option>
-                        <option value="34">Intake 34</option>
-                        <option value="35">Intake 35</option>
-                        <option value="36">Intake 36</option>
-                        <option value="37">Intake 37</option>
-                        <option value="38">Intake 38</option>
-                        <option value="39">Intake 39</option>
-                    </select>
-                </div>
-                <div id="alumniListAdmin" class="alumni-table"></div>
-            </div>
-
-            <!-- Import/Export -->
-            <div class="import-export">
-                <button onclick="exportData()" class="export-btn">📥 Export Data (JSON)</button>
-                <button onclick="importData()" class="import-btn">📤 Import Data (JSON)</button>
-                <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
-            </div>
-        </div>
+    <div id="loginScreen" class="login-box">
+        <h2>🔐 Admin Login</h2>
+        <input type="password" id="password" placeholder="Enter Admin Password">
+        <button onclick="login()">Login</button>
+        <div id="errorMsg" class="error"></div>
     </div>
-
-    <script src="admin.js"></script>
+    
+    <div id="adminPanel" style="display:none;" class="admin-container">
+        <header>
+            <h1>📋 Alumni Management</h1>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </header>
+        
+        <div style="background:#f0f2f5; padding:20px; border-radius:10px; margin-bottom:20px;">
+            <h3>Add New Alumni</h3>
+            <form id="alumniForm">
+                <div class="form-group">
+                    <label>Registration Number (e.g., D/ENG/15/0012)</label>
+                    <input type="text" id="regNo" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Intake (29-39)</label>
+                    <input type="number" id="intake" min="29" max="39" required>
+                </div>
+                <div class="form-group">
+                    <label>Degree</label>
+                    <input type="text" id="degree" value="Electrical and Electronic Engineering" required>
+                </div>
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" id="year" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="form-group">
+                    <label>Current Job</label>
+                    <input type="text" id="job">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" id="phone">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="location">
+                </div>
+                <button type="submit">Save Alumni</button>
+                <button type="button" onclick="resetForm()">Cancel</button>
+            </form>
+        </div>
+        
+        <div id="alumniTable"></div>
+    </div>
+    
+    <script>
+        const ADMIN_PASSWORD = "admin123";
+        let alumniData = JSON.parse(localStorage.getItem('alumniData')) || {
+            29: [
+                { regNo: "D/ENG/15/0012", name: "KAL Wijeratne", degree: "Electrical and Electronic Engineering", year: 2014, email: "kal.w@example.com", job: "Electrical Engineer", phone: "+94 71 234 5678", location: "Colombo" },
+                { regNo: "D/ENG/15/0013", name: "IU Jalthotage", degree: "Electrical and Electronic Engineering", year: 2014, email: "iu.j@example.com", job: "Power Systems Engineer", phone: "+94 71 234 5679", location: "Kandy" }
+            ],
+            30: [], 31: [], 32: [], 33: [], 34: [], 35: [], 36: [], 37: [], 38: [], 39: []
+        };
+        
+        function login() {
+            const pwd = document.getElementById('password').value;
+            if (pwd === ADMIN_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadTable();
+            } else {
+                document.getElementById('errorMsg').innerText = 'Wrong password!';
+            }
+        }
+        
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+        
+        function saveData() {
+            localStorage.setItem('alumniData', JSON.stringify(alumniData));
+        }
+        
+        function loadTable() {
+            const tbody = document.getElementById('alumniTable');
+            let html = '<h3>Manage Alumni</h3><table><thead><tr><th>Reg No</th><th>Name</th><th>Intake</th><th>Degree</th><th>Actions</th></tr></thead><tbody>';
+            
+            for (let intake in alumniData) {
+                alumniData[intake].forEach((alumni, index) => {
+                    html += `<tr>
+                        <td>${alumni.regNo}</td>
+                        <td>${alumni.name}</td>
+                        <td>${intake}</td>
+                        <td>${alumni.degree}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editAlumni(${intake}, ${index})">Edit</button>
+                            <button class="delete-btn" onclick="deleteAlumni(${intake}, ${index})">Delete</button>
+                        </td>
+                    </tr>`;
+                });
+            }
+            
+            html += '</tbody></table>';
+            tbody.innerHTML = html;
+        }
+        
+        document.getElementById('alumniForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const intake = parseInt(document.getElementById('intake').value);
+            const alumni = {
+                regNo: document.getElementById('regNo').value,
+                name: document.getElementById('name').value,
+                degree: document.getElementById('degree').value,
+                year: parseInt(document.getElementById('year').value),
+                email: document.getElementById('email').value,
+                job: document.getElementById('job').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value
+            };
+            
+            if (!alumniData[intake]) alumniData[intake] = [];
+            alumniData[intake].push(alumni);
+            saveData();
+            loadTable();
+            resetForm();
+            alert('Alumni added successfully!');
+        });
+        
+        function deleteAlumni(intake, index) {
+            if (confirm('Delete this alumni?')) {
+                alumniData[intake].splice(index, 1);
+                saveData();
+                loadTable();
+            }
+        }
+        
+        function editAlumni(intake, index) {
+            const alumni = alumniData[intake][index];
+            document.getElementById('regNo').value = alumni.regNo;
+            document.getElementById('name').value = alumni.name;
+            document.getElementById('intake').value = intake;
+            document.getElementById('degree').value = alumni.degree;
+            document.getElementById('year').value = alumni.year;
+            document.getElementById('email').value = alumni.email;
+            document.getElementById('job').value = alumni.job;
+            document.getElementById('phone').value = alumni.phone;
+            document.getElementById('location').value = alumni.location;
+            
+            // Remove old and add updated
+            alumniData[intake].splice(index, 1);
+            saveData();
+            loadTable();
+        }
+        
+        function resetForm() {
+            document.getElementById('alumniForm').reset();
+            document.getElementById('intake').value = '';
+        }
+        
+        loadTable();
+    </script>
 </body>
 </html>
