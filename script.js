@@ -1,75 +1,134 @@
-// Load data from localStorage (set by admin panel)
-function loadAlumniData() {
-    const savedData = localStorage.getItem('publicAlumniData');
-    if (savedData) {
-        return JSON.parse(savedData);
-    }
-    // Fallback default data
-    return {
-        29: [
-            { name: "John Smith", degree: "Computer Science", year: 2014, email: "john.smith@example.com", job: "Software Engineer at Google" },
-            { name: "Sarah Johnson", degree: "Business Administration", year: 2014, email: "sarah.j@example.com", job: "Marketing Director" }
-        ],
-        30: [
-            { name: "David Wilson", degree: "Computer Science", year: 2015, email: "david.w@example.com", job: "Tech Lead at Microsoft" }
-        ]
-    };
-}
+// Alumni Database for Intakes 29-39 (Based on your image)
+const alumniData = {
+    29: [
+        { regNo: "D/ENG/15/0012", name: "KAL Wijeratne", degree: "Electrical and Electronic Engineering", year: 2014, email: "kal.w@example.com", job: "Electrical Engineer", phone: "+94 71 234 5678", location: "Colombo" },
+        { regNo: "D/ENG/15/0013", name: "IU Jalthotage", degree: "Electrical and Electronic Engineering", year: 2014, email: "iu.j@example.com", job: "Power Systems Engineer", phone: "+94 71 234 5679", location: "Kandy" },
+        { regNo: "D/ENG/15/0023", name: "PMD Nayanathara", degree: "Electrical and Electronic Engineering", year: 2014, email: "pmd.n@example.com", job: "Electronics Designer", phone: "+94 71 234 5680", location: "Galle" },
+        { regNo: "D/ENG/15/0035", name: "HMKN Ariyapala", degree: "Electrical and Electronic Engineering", year: 2014, email: "hmkn.a@example.com", job: "Control Systems Engineer", phone: "+94 71 234 5681", location: "Kurunegala" },
+        { regNo: "D/ENG/15/0038", name: "KDOV Dharmawardena", degree: "Electrical and Electronic Engineering", year: 2014, email: "kdov.d@example.com", job: "Renewable Energy Specialist", phone: "+94 71 234 5682", location: "Negombo" },
+        { regNo: "D/ENG/15/0040", name: "AMH Shashiranga", degree: "Electrical and Electronic Engineering", year: 2014, email: "amh.s@example.com", job: "Telecom Engineer", phone: "+94 71 234 5683", location: "Matara" },
+        { regNo: "D/ENG/15/0045", name: "DMKC Dissanayake", degree: "Electrical and Electronic Engineering", year: 2014, email: "dmkc.d@example.com", job: "Project Engineer", phone: "+94 71 234 5684", location: "Jaffna" },
+        { regNo: "D/ENG/15/0047", name: "EMNK Ekanayaka", degree: "Electrical and Electronic Engineering", year: 2014, email: "emnk.e@example.com", job: "Research Engineer", phone: "+94 71 234 5685", location: "Anuradhapura" }
+    ],
+    30: [
+        { regNo: "D/ENG/16/0001", name: "ABCD Perera", degree: "Electrical and Electronic Engineering", year: 2015, email: "abcd.p@example.com", job: "Electrical Engineer at LECO", phone: "+94 71 234 5686", location: "Colombo" },
+        { regNo: "D/ENG/16/0002", name: "MNOP Silva", degree: "Electrical and Electronic Engineering", year: 2015, email: "mnop.s@example.com", job: "Automation Engineer", phone: "+94 71 234 5687", location: "Gampaha" }
+    ],
+    31: [], 32: [], 33: [], 34: [], 35: [], 36: [], 37: [], 38: [], 39: []
+};
 
-let alumniData = loadAlumniData();
-let currentIntake = 29;
+let currentFilter = "all";
+let currentSearch = "";
 
-function displayAlumni(intake, searchTerm = "") {
-    const alumni = alumniData[intake] || [];
-    const alumniListDiv = document.getElementById('alumniList');
-    const totalCountSpan = document.getElementById('totalCount');
+// Function to display alumni cards
+function displayAlumni() {
+    const container = document.getElementById('alumniList');
+    let filteredAlumni = [];
     
-    let filteredAlumni = alumni;
-    if (searchTerm) {
-        filteredAlumni = alumni.filter(alumnus => 
-            alumnus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (alumnus.degree && alumnus.degree.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (alumnus.job && alumnus.job.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+    // Filter by intake and search
+    for (let intake in alumniData) {
+        if (currentFilter !== "all" && currentFilter !== intake) continue;
+        
+        alumniData[intake].forEach(alumni => {
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                if (alumni.name.toLowerCase().includes(searchLower) || 
+                    alumni.regNo.toLowerCase().includes(searchLower)) {
+                    filteredAlumni.push({ ...alumni, intake: intake });
+                }
+            } else {
+                filteredAlumni.push({ ...alumni, intake: intake });
+            }
+        });
     }
     
-    totalCountSpan.textContent = `Total: ${filteredAlumni.length} alumni`;
+    // Update stats
+    document.getElementById('totalCount').innerText = `Total Alumni: ${filteredAlumni.length}`;
     
+    // Display cards
     if (filteredAlumni.length === 0) {
-        alumniListDiv.innerHTML = '<div class="alumni-card" style="text-align: center; grid-column: 1/-1;">No alumni found</div>';
+        container.innerHTML = '<div class="no-results">No alumni found</div>';
         return;
     }
     
-    alumniListDiv.innerHTML = filteredAlumni.map(alumnus => `
-        <div class="alumni-card" onclick="showAlumniDetails('${alumnus.name}', '${alumnus.degree}', '${alumnus.year}', '${alumnus.email}', '${alumnus.job}')">
-            <div class="alumni-name">${alumnus.name}</div>
-            <div class="alumni-detail"><strong>Degree:</strong> ${alumnus.degree || 'N/A'}</div>
-            <div class="alumni-detail"><strong>Year:</strong> ${alumnus.year || 'N/A'}</div>
-            <div class="alumni-detail"><strong>Current Role:</strong> ${alumnus.job || 'N/A'}</div>
-            <div class="badge">Intake ${intake}</div>
+    container.innerHTML = filteredAlumni.map(alumni => `
+        <div class="alumni-card">
+            <div class="photo-placeholder">
+                <div class="avatar-icon">👨‍🎓</div>
+                <div class="degree-badge">BSc Eng Hons</div>
+            </div>
+            <div class="card-content">
+                <div class="reg-number">${alumni.regNo}</div>
+                <div class="alumni-name">${alumni.name}</div>
+                <div class="alumni-degree">${alumni.degree}</div>
+                <div class="alumni-intake">Intake ${alumni.intake} | ${alumni.year}</div>
+                <button class="profile-btn" onclick="showProfile('${alumni.regNo}')">Go to profile →</button>
+            </div>
         </div>
     `).join('');
 }
 
-function showAlumniDetails(name, degree, year, email, job) {
-    alert(`🎓 Alumni Details\n\nName: ${name}\nDegree: ${degree}\nGraduation Year: ${year}\nEmail: ${email}\nCurrent Position: ${job}`);
+// Function to show profile modal
+function showProfile(regNo) {
+    let alumni = null;
+    let intakeNum = null;
+    
+    // Find the alumni
+    for (let intake in alumniData) {
+        const found = alumniData[intake].find(a => a.regNo === regNo);
+        if (found) {
+            alumni = found;
+            intakeNum = intake;
+            break;
+        }
+    }
+    
+    if (!alumni) return;
+    
+    const modal = document.getElementById('profileModal');
+    const profileDetails = document.getElementById('profileDetails');
+    
+    profileDetails.innerHTML = `
+        <div class="profile-header">
+            <div class="profile-avatar">👨‍🎓</div>
+            <h2>${alumni.name}</h2>
+            <p>${alumni.regNo}</p>
+        </div>
+        <div class="profile-info">
+            <p><strong>📚 Degree:</strong> ${alumni.degree}</p>
+            <p><strong>📅 Intake:</strong> ${intakeNum} (${alumni.year})</p>
+            <p><strong>✉️ Email:</strong> ${alumni.email}</p>
+            <p><strong>💼 Current Position:</strong> ${alumni.job}</p>
+            <p><strong>📞 Phone:</strong> ${alumni.phone}</p>
+            <p><strong>📍 Location:</strong> ${alumni.location}</p>
+        </div>
+    `;
+    
+    modal.style.display = "block";
 }
 
-// Listen for data updates
-window.addEventListener('storage', (e) => {
-    if (e.key === 'publicAlumniData') {
-        alumniData = JSON.parse(e.newValue);
-        displayAlumni(currentIntake, document.getElementById('searchInput').value);
-    }
-});
+// Close modal
+document.querySelector('.close').onclick = function() {
+    document.getElementById('profileModal').style.display = "none";
+}
 
+window.onclick = function(event) {
+    const modal = document.getElementById('profileModal');
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Event listeners
 document.getElementById('intakeSelect').addEventListener('change', (e) => {
-    currentIntake = parseInt(e.target.value);
-    displayAlumni(currentIntake, document.getElementById('searchInput').value);
+    currentFilter = e.target.value;
+    displayAlumni();
 });
 
 document.getElementById('searchInput').addEventListener('input', (e) => {
-    displayAlumni(currentIntake, e.target.value);
+    currentSearch = e.target.value;
+    displayAlumni();
 });
 
-displayAlumni(29);
+// Initial load
+displayAlumni();
