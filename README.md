@@ -1,1 +1,44 @@
-# university-alumni-list
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Alumni - Intakes 29-39</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 University Alumni Association</h1>
+            <p>Intake 29 - Intake 39 | Class of 2014-2024</p>
+        </header>
+
+        <div class="controls">
+            <label for="intakeSelect">Select Intake:</label>
+            <select id="intakeSelect">
+                <option value="29">Intake 29 (2014)</option>
+                <option value="30">Intake 30 (2015)</option>
+                <option value="31">Intake 31 (2016)</option>
+                <option value="32">Intake 32 (2017)</option>
+                <option value="33">Intake 33 (2018)</option>
+                <option value="34">Intake 34 (2019)</option>
+                <option value="35">Intake 35 (2020)</option>
+                <option value="36">Intake 36 (2021)</option>
+                <option value="37">Intake 37 (2022)</option>
+                <option value="38">Intake 38 (2023)</option>
+                <option value="39">Intake 39 (2024)</option>
+            </select>
+            
+            <input type="text" id="searchInput" placeholder="Search alumni by name...">
+        </div>
+
+        <div class="stats">
+            <span id="totalCount">Total: 0 alumni</span>
+        </div>
+
+        <div id="alumniList" class="alumni-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
